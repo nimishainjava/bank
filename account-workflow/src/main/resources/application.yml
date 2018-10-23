@@ -1,0 +1,40 @@
+server:
+  port: 8086
+
+spring:
+  datasource:
+    url:    jdbc:mysql://localhost/oasis_example_workflow?useSSL=false&allowPublicKeyRetrieval=true
+    username: camunda
+    password: c4mund4
+  kafka:
+    consumer:
+      group-id: oasis-subscriber
+      bootstrap-servers: localhost:9092
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties.spring.json.trusted.packages: com.springernature.oasis.example.domain
+
+# To revert to using H2 locally, remove the spring datasource section entirely and also the camunda.bpm.database section.
+
+camunda.bpm:
+  admin-user:
+    id: admin
+    password: c4mund4
+    firstName: Camunda
+    lastName: Admin
+  database:
+    type: mysql
+  filter:
+    create: All tasks
+
+workflow:
+  process:
+    name: OASiSExample
+  messaging:
+    topic: oasis-example
+  error:
+    id: OASIS-0002
+    message: Error subscribing to Kafka topic ${workflow.messaging.topic}
+
+
+
+
