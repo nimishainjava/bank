@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleLocalSettings">
+    <option name="modificationStamps">
+      <map>
+        <entry key="$USER_HOME$/Documents/work/Projects/Spring-boot" value="3048193292000" />
+        <entry key="$USER_HOME$/Documents/work/Projects/spring-boot-example" value="3048195540000" />
+        <entry key="$USER_HOME$/Documents/work/cnf-payment-web" value="2983602786000" />
+        <entry key="$USER_HOME$/Documents/work/git/bmc-member-reporting" value="4549025895000" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-author-api" value="1519209771000" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-journal-service" value="1497883986000" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-payment" value="1513833877000" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-payment-api" value="1490960340000" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-payment-orchestrator" value="3050524954000" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-payment-web" value="3040149536000" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-pricing-api" value="3046693918000" />
+        <entry key="$USER_HOME$/Documents/work/git/examples/spring-boot-example" value="3049231216000" />
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$USER_HOME$/Documents/work/git/cnf-db-access-api" value="PREVIEW" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-payment-mps" value="PREVIEW" />
+        <entry key="$USER_HOME$/Documents/work/git/cnf-payment-web" value="PREVIEW" />
+        <entry key="$USER_HOME$/Documents/work/oasis-psa" value="PREVIEW" />
+        <entry key="$USER_HOME$/Documents/work/spring-boot-example" value="PREVIEW" />
+        <entry key="$USER_HOME$/Documents/work/spring-kafka" value="PREVIEW" />
+        <entry key="$USER_HOME$/oasis-membership" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../git/cnf-membership-web" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../git/cnf-payment-orchestrator" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../git/oasis-membership" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../git/oasis-poc" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../git/oasis-poc/EmailSender" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../oasis-membership" value="PREVIEW" />
+      </map>
+    </option>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="com.intellij.jarRepository.settings.RemoteRepositoriesConfigurable" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <properties />
+      <listeners />
+    </configuration>
+  </component>
+  <component name="SbtLocalSettings">
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$/../scala/dflux-feed-delivery" value="PREVIEW" />
+      </map>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
