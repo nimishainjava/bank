@@ -2,18 +2,17 @@ server:
   port: 8086
 
 spring:
-  datasource:
-    url:    jdbc:mysql://localhost/oasis_example_workflow?useSSL=false&allowPublicKeyRetrieval=true
-    username: camunda
-    password: c4mund4
+  data:
+    mongodb:
+      database: oasis-example
+      host: localhost
+      port: 27017
   kafka:
     consumer:
       group-id: oasis-subscriber
       bootstrap-servers: localhost:9092
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties.spring.json.trusted.packages: com.springernature.oasis.example.domain
-
-# To revert to using H2 locally, remove the spring datasource section entirely and also the camunda.bpm.database section.
 
 camunda.bpm:
   admin-user:
