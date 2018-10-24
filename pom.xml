@@ -28,6 +28,7 @@
         <module>account-management</module>
         <module>account-workflow</module>
         <module>account-common-model</module>
+        <module>account-mongodb-service</module>
     </modules>
 
 </project>
