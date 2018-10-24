@@ -3,9 +3,6 @@ package com.springernature.oasis;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Spring Boot Application starter.
- */
 @SpringBootApplication
 public class Application {
 	
