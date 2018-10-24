@@ -10,7 +10,6 @@ public class TransactionDetails {
     private String description;
     private TransactionType type;
 
-
     public Long getToAccountNumber() {
         return toAccountNumber;
     }
