@@ -3,7 +3,6 @@ package com.springernature.oasis.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.dom4j.Branch;
 
 import java.util.Date;
 import java.util.Set;
