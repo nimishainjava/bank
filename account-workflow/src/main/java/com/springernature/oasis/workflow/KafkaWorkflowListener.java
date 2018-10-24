@@ -2,6 +2,7 @@ package com.springernature.oasis.workflow;
 
 import javax.annotation.PostConstruct;
 
+import com.springernature.oasis.model.TransactionDetails;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.camunda.bpm.engine.RuntimeService;
 import org.slf4j.Logger;
@@ -30,11 +31,11 @@ public  class KafkaWorkflowListener {
 
 	/**
 	 * Listen for Kafka messages on the specified topic.
-	 * @param message kafka record
+	 * @param record Consumer record
 	 */
 	@KafkaListener(topics = "${workflow.messaging.topic}", groupId = "oasis-subscriber")
-	public void listen(String message) {
-		LOG.info("message ----- "+message);
+	public void listen(ConsumerRecord<String, TransactionDetails> record) {
+		LOG.info("Starting {} instance with received message: key={}, value={}", this.workflow, record.key(), record.value());
 		this.runtime.startProcessInstanceByKey(this.workflow);
 	}
 }
