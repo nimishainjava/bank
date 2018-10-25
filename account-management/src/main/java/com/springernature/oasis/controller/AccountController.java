@@ -22,8 +22,7 @@ public class AccountController {
 
     @PostMapping(value = "/deposit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity desposit(@Valid @RequestBody TransactionDetails request) {
-        accountService.deposit(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return accountService.deposit(request);
     }
 
 
@@ -39,6 +38,5 @@ public class AccountController {
 
         return new ResponseEntity(HttpStatus.OK);
     }
-
 
 }
