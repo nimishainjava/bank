@@ -1,7 +1,9 @@
 package com.springernature.oasis.model;
 
 public enum TransactionType {
-    DEBIT("Dr"), CREDIT("Cr");
+    DEBIT("Dr"),
+    CREDIT("Cr"),
+    TRANSFER("Tr");
 
     private String type;
 

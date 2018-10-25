@@ -2,18 +2,20 @@ server:
   port: 8086
 
 spring:
- kafka:
-     consumer:
-       group-id: oasis-subscriber
-       bootstrap-servers: localhost:9092
-       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  kafka:
+    consumer:
+      group-id: oasis-subscriber
+      bootstrap-servers: localhost:9092
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties.spring.json.value.default.type: com.springernature.oasis.model.TransactionDetails
+      properties.spring.json.trusted.packages: com.springernature.oasis.model
 
 
 workflow:
   process:
     name: bank_workflow
   messaging:
-    topic: bank-trandaction
+    topic: bank-transaction
   error:
     id: OASIS-0002
     message: Error subscribing to Kafka topic ${workflow.messaging.topic}
