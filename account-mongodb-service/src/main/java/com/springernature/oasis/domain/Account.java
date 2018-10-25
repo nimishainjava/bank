@@ -1,4 +1,4 @@
-package com.springernature.oasiqqs.domain;
+package com.springernature.oasis.domain;
 
 
 import java.util.Date;

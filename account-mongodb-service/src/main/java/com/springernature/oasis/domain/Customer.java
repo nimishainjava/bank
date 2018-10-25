@@ -1,18 +1,16 @@
-package com.springernature.oasiqqs.domain;
+package com.springernature.oasis.domain;
 
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 
 import java.util.Set;
 
 @Document
-
 public class Customer {
 
-
+    @Id
     private Long id;
-
     private String firstName;
     private String lastName;
     private String email;
