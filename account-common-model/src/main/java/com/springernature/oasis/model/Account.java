@@ -1,16 +1,19 @@
 package com.springernature.oasis.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 public class Account {
 
     private Long number;
     private String type;
     private Branch branch;
-    private String balance;
-    private Long overDrawnLimit;
+    private BigDecimal balance;
+    private BigDecimal overDrawnLimit;
     private Date openingDate;
-    private String status;
+    private AccountStatusType status;
+    private Set<Transaction> transactions;
 
     public Long getNumber() {
         return number;
@@ -36,19 +39,19 @@ public class Account {
         this.branch = branch;
     }
 
-    public String getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 
-    public Long getOverDrawnLimit() {
+    public BigDecimal getOverDrawnLimit() {
         return overDrawnLimit;
     }
 
-    public void setOverDrawnLimit(Long overDrawnLimit) {
+    public void setOverDrawnLimit(BigDecimal overDrawnLimit) {
         this.overDrawnLimit = overDrawnLimit;
     }
 
@@ -60,11 +63,19 @@ public class Account {
         this.openingDate = openingDate;
     }
 
-    public String getStatus() {
+    public AccountStatusType getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AccountStatusType status) {
         this.status = status;
+    }
+
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }
