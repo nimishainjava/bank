@@ -35,7 +35,7 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex(this.endPointRegex))
+                .paths(PathSelectors.ant(this.endPointRegex))
                 .build()
                 .apiInfo(apiInfo());
     }
@@ -47,4 +47,5 @@ public class SwaggerConfiguration {
                 .version(this.version)
                 .build();
     }
+
 }
