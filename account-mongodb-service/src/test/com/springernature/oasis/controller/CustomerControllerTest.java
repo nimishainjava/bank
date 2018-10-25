@@ -48,9 +48,27 @@ public class CustomerControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("success", response.getBody());
-
-
     }
+
+    @Test
+    public void shouldGetAccount(){
+        ResponseEntity<Account> response = testRestTemplate.exchange(createURLWithPort("/account/1"),
+                HttpMethod.GET, null, Account.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(AccountStatusType.ACTIVE,response.getBody().getStatus());
+        assertEquals("Saving",response.getBody().getType());
+        assertEquals(new BigDecimal("5000"),response.getBody().getOverDrawnLimit());
+    }
+
+    @Test
+    public void shouldNotGetAccount(){
+        ResponseEntity response = testRestTemplate.exchange(createURLWithPort("/account/2"),
+                HttpMethod.GET, null, String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
 
     private CustomerDetails getCustomer() {
         CustomerDetails customer = new CustomerDetails();

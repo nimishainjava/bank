@@ -1,6 +1,8 @@
 package com.springernature.oasis.domain;
 
 
+import com.springernature.oasis.model.AccountStatusType;
+
 import java.util.Date;
 import java.util.Set;
 
@@ -13,7 +15,7 @@ public  class Account {
     private String balance;
     private Long overDrawnLimit;
     private Date openingDate;
-    private String status;
+    private AccountStatusType status;
     private Set<Transaction> transactions;
 
     public Long getNumber() {
@@ -64,11 +66,11 @@ public  class Account {
         this.openingDate = openingDate;
     }
 
-    public String getStatus() {
+    public AccountStatusType getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AccountStatusType status) {
         this.status = status;
     }
 
