@@ -1,6 +1,7 @@
 package com.springernature.oasis.controller;
 
 import com.springernature.oasis.model.TransactionDetails;
+import com.springernature.oasis.model.TransactionType;
 import com.springernature.oasis.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,19 @@ public class AccountTransactionController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/updateAccount")
-    public ResponseEntity updateAccount(@RequestBody TransactionDetails transactionDetails) {
-        return accountService.updateAccount(transactionDetails);
+    @PostMapping("/deposit")
+    public ResponseEntity deposit(@RequestBody TransactionDetails transactionDetails) {
+        return accountService.updateAccount(transactionDetails, TransactionType.CREDIT);
     }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity withdraw(@RequestBody TransactionDetails transactionDetails) {
+        return accountService.updateAccount(transactionDetails, TransactionType.DEBIT);
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity transfer(@RequestBody TransactionDetails transactionDetails) {
+        return accountService.updateAccount(transactionDetails, TransactionType.TRANSFER);
+    }
+
 }

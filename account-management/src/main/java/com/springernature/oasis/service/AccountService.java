@@ -109,7 +109,7 @@ public class AccountService {
 
     }
 
-    public AccountResponse updateAccount(TransactionDetails transactionDetails) {
+    public AccountResponse updateAccount(TransactionDetails transactionDetails, TransactionType transactionType) {
 
         // TODO: validate the data in request.
 
@@ -118,17 +118,17 @@ public class AccountService {
             Account account = restTemplate.getForObject(createDBServiceRestUrl(GET_ACCOUNT_BY_ACCOUNT_ID.replace("{*}", transactionDetails.getToAccountNumber().toString())), Account.class);
 
             // update account available balance
-            updateAccountBalance(account, transactionDetails);
+            updateAccountBalance(account, transactionType, transactionDetails);
 
             //update account status
-            updateAccountStatus(account, transactionDetails);
+            updateAccountStatus(account);
 
             // log transaction
             //logTranscation(account, transactionDetails);
 
             // TODO: send updated object to DB Service
 
-        }  catch (HttpStatusCodeException e) {
+        } catch (HttpStatusCodeException e) {
             if (e.getStatusCode().equals(HttpStatus.NOT_FOUND))
                 throw new AccountException(ACCOUNT_INVALID_MSG, e.getStatusCode());
             else if (e.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR))
@@ -143,15 +143,15 @@ public class AccountService {
 
     }
 
-    private void updateAccountBalance(Account account, TransactionDetails transactionDetails) {
-        if (transactionDetails.getType().equals(TransactionType.CREDIT)) {
+    private void updateAccountBalance(Account account, TransactionType transactionType, TransactionDetails transactionDetails) {
+        if (transactionType.equals(TransactionType.CREDIT)) {
             account.setBalance(account.getBalance().add(transactionDetails.getAmount()));
         } else {
             account.setBalance(account.getBalance().subtract(transactionDetails.getAmount()));
         }
     }
 
-    private void updateAccountStatus(Account account, TransactionDetails transactionDetails) {
+    private void updateAccountStatus(Account account) {
         if (account.getBalance().doubleValue() < 0.00 && account.getStatus().equals(AccountStatusType.ACTIVE)) {
             account.setStatus(AccountStatusType.OVERDRAWN);
         } else if (account.getBalance().doubleValue() >= 0.00 && account.getStatus().equals(AccountStatusType.OVERDRAWN)) {
@@ -159,7 +159,7 @@ public class AccountService {
         }
     }
 
-    private void logTranscation(Account account, TransactionDetails transactionDetails) {
+    private void logTransaction(Account account, TransactionDetails transactionDetails) {
         account.getTransactions().add(getTransaction(transactionDetails));
     }
 
