@@ -81,4 +81,19 @@ public  class Account {
     public void setTransactions(Set<Transaction> transactions) {
         this.transactions = transactions;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Account account = (Account) o;
+
+        return number.equals(account.number);
+    }
+
+    @Override
+    public int hashCode() {
+        return number.hashCode();
+    }
 }

@@ -6,16 +6,16 @@ import java.util.Date;
 
 public class Transaction {
 
-    private String type;
+    private TransactionType type;
     private Date date;
     private BigDecimal amount;
     private String description;
 
-    public String getType() {
+    public TransactionType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TransactionType type) {
         this.type = type;
     }
 

@@ -1,7 +1,6 @@
 package com.springernature.oasis.controller;
 
 import com.springernature.oasis.Application;
-import com.springernature.oasis.domain.Customer;
 import com.springernature.oasis.model.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
@@ -69,6 +68,41 @@ public class CustomerControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    @Test
+    public void shouldUpdateAccount(){
+
+        Account account = getAccountModel();
+        HttpEntity<Account> entity = new HttpEntity<>(account, headers);
+
+        ResponseEntity response = testRestTemplate.exchange(createURLWithPort("/account/update"),
+                HttpMethod.PUT, entity, Account.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void shouldNotUpdateAccountIfNotFound(){
+
+        Account account = getAccountModel();
+        account.setNumber(2L);
+        HttpEntity<Account> entity = new HttpEntity<>(account, headers);
+
+        ResponseEntity response = testRestTemplate.exchange(createURLWithPort("/account/update"),
+                HttpMethod.PUT, entity, String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    private Account getAccountModel() {
+        Account account = getAccount(getAddress()) ;
+        Transaction transaction = new Transaction();
+        transaction.setAmount(new BigDecimal(1000));
+        transaction.setDescription("test transction");
+        transaction.setType(TransactionType.CREDIT);
+        account.getTransactions().add(transaction);
+        return account;
+    }
+
 
     private CustomerDetails getCustomer() {
         CustomerDetails customer = new CustomerDetails();
@@ -77,14 +111,14 @@ public class CustomerControllerTest {
         customer.setEmail("ami@tabh.com");
         customer.setContactNumber("99999999999");
         customer.setUni("xyz12345");
-        Address address = new Address();
-        address.setLine1("1233");
-        address.setLine2("Lane 2");
-        address.setCity("Mumbai");
-        address.setState("MH");
-        address.setCountry("India");
-        address.setPincode("411013");
+        Address address = getAddress();
         customer.setAddress(address);
+        Account account = getAccount(address);
+        customer.getAccounts().add(account);
+        return customer;
+    }
+
+    private Account getAccount(Address address) {
         Account account = new Account();
         account.setNumber(1L);
         account.setBalance(new BigDecimal(1000.00));
@@ -93,8 +127,18 @@ public class CustomerControllerTest {
         account.setOverDrawnLimit(new BigDecimal(5000.00));
         account.setStatus(AccountStatusType.ACTIVE);
         account.setType("Saving");
-        customer.getAccounts().add(account);
-        return customer;
+        return account;
+    }
+
+    private Address getAddress() {
+        Address address = new Address();
+        address.setLine1("1233");
+        address.setLine2("Lane 2");
+        address.setCity("Mumbai");
+        address.setState("MH");
+        address.setCountry("India");
+        address.setPincode("411013");
+        return address;
     }
 
 

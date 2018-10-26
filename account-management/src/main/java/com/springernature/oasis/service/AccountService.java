@@ -167,7 +167,7 @@ public class AccountService {
         Transaction transaction = new Transaction();
         transaction.setAmount(transactionDetails.getAmount());
         transaction.setDescription(getTransactionDescription(transactionDetails));
-        transaction.setType(transactionDetails.getType().toString());
+        transaction.setType(transactionDetails.getType());
         transaction.setDate(new Date());
         return transaction;
     }

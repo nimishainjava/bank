@@ -1,6 +1,7 @@
 package com.springernature.oasis.service;
 
 import com.springernature.oasis.domain.Customer;
+import com.springernature.oasis.domain.Transaction;
 import com.springernature.oasis.model.Account;
 import com.springernature.oasis.model.CustomerDetails;
 import com.springernature.oasis.repository.CustomerRepository;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class CustomerService {
@@ -32,5 +36,35 @@ public class CustomerService {
        }else {
            throw new HttpClientErrorException(HttpStatus.NOT_FOUND,"No Account found");
        }
+    }
+
+    public Account updateAccount(Account account) throws Exception {
+        if(account.getNumber() != null){
+            Customer customer = customerRepository.findcustomerByAccountNumber(account.getNumber());
+            if(customer != null){
+                populateAccountForCustomer(account, customer);
+                customerRepository.save(customer);
+                return account;
+            }else {
+                throw new HttpClientErrorException(HttpStatus.NOT_FOUND,"No Account found");
+            }
+        }else {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,"Account number is not present");
+        }
+    }
+
+    private void populateAccountForCustomer(Account account, Customer customer) {
+        ModelMapper modelMapper = new ModelMapper();
+        com.springernature.oasis.domain.Account accountDomain = modelMapper.map(account, com.springernature.oasis.domain.Account.class);
+        updateTranscationDetails(accountDomain);
+        customer.getAccounts().remove(accountDomain);
+        customer.getAccounts().add(accountDomain);
+    }
+
+    private void updateTranscationDetails(com.springernature.oasis.domain.Account accountDomain) {
+        Long transactionNumber = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+        Transaction transaction = accountDomain.getTransactions().stream().filter(tran -> tran.getNumber() == null).findAny().get();
+        transaction.setNumber(transactionNumber);
+        transaction.setDate(new Date());
     }
 }

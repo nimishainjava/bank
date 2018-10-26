@@ -2,6 +2,7 @@ package com.springernature.oasis.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Account {
@@ -72,6 +73,8 @@ public class Account {
     }
 
     public Set<Transaction> getTransactions() {
+        if(null == transactions)
+            transactions=new HashSet<Transaction>();
         return transactions;
     }
 
