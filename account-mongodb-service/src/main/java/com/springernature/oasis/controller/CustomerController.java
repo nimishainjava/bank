@@ -1,5 +1,6 @@
 package com.springernature.oasis.controller;
 
+import com.springernature.oasis.model.Account;
 import com.springernature.oasis.model.CustomerDetails;
 import com.springernature.oasis.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,15 @@ public class CustomerController {
     public ResponseEntity getAccount(@PathVariable("accounId") Long accountId) {
         try {
             return new ResponseEntity(customerService.getAccount(accountId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity("Not Found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "/account/update")
+    public ResponseEntity updateAccount(@RequestBody Account account){
+        try {
+            return new ResponseEntity(customerService.updateAccount(account),HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity("Not Found", HttpStatus.NOT_FOUND);
         }
