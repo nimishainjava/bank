@@ -40,8 +40,7 @@ public class AccountService {
             Account account = restTemplate.getForObject(createDBServiceRestUrl(GET_ACCOUNT_BY_ACCOUNT_ID.replace("{*}", transactionDetails.getToAccountNumber().toString())), Account.class);
 
             // Check if the account is active/overdrawn to deposit money
-            if (account.getStatus().equals(AccountStatusType.ACTIVE)
-                    || account.getStatus().equals(AccountStatusType.OVERDRAWN)) {
+            if (checkAccountIsActiveOrOverDrawn(account)) {
                 transactionDetails.setType(TransactionType.CREDIT);
                 transactionProducer.publish(transactionDetails);
             } else {
@@ -54,6 +53,8 @@ public class AccountService {
             else if (e.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR))
                 // Log Exception
                 throw new AccountException(INTERNAL_SERVER_ERROR_MSG, e.getStatusCode());
+        }catch (AccountException ae) {
+            throw ae;
         } catch (Exception e) {
             // Log Exception
             throw new AccountException(INTERNAL_SERVER_ERROR_MSG, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -69,12 +70,11 @@ public class AccountService {
 
         try {
             // DB service call
-            Account account = restTemplate.getForObject(createDBServiceRestUrl(GET_ACCOUNT_BY_ACCOUNT_ID.replace("{*}", transactionDetails.getToAccountNumber().toString())), Account.class);
+            Account account = restTemplate.getForObject(createDBServiceRestUrl(GET_ACCOUNT_BY_ACCOUNT_ID.replace("{*}", transactionDetails.getFromAccountNumber().toString())), Account.class);
 
             // Check if the account is active/overdrawn. Then check if the account has sufficient balance for the withdrawal request.
-            if (account.getStatus().equals(AccountStatusType.ACTIVE)
-                    || account.getStatus().equals(AccountStatusType.OVERDRAWN)) {
-                if ((account.getBalance().doubleValue() + account.getOverDrawnLimit().doubleValue()) >= transactionDetails.getAmount().doubleValue()) {
+            if (checkAccountIsActiveOrOverDrawn(account)) {
+                if (checkIfSufficientBalanceInAccount(account, transactionDetails)) {
                     transactionDetails.setType(TransactionType.DEBIT);
                     transactionProducer.publish(transactionDetails);
                 } else {
@@ -188,6 +188,15 @@ public class AccountService {
 
     private String getDBServiceURL() {
         return mongoDBServiceUrl + ":" + mongoDBServicePort;
+    }
+
+    private boolean checkAccountIsActiveOrOverDrawn(Account account) {
+        return ( account.getStatus().equals(AccountStatusType.ACTIVE)
+                || account.getStatus().equals(AccountStatusType.OVERDRAWN) );
+    }
+
+    private boolean checkIfSufficientBalanceInAccount(Account account, TransactionDetails transactionDetails) {
+        return (account.getBalance().doubleValue() + account.getOverDrawnLimit().doubleValue()) >= transactionDetails.getAmount().doubleValue();
     }
 
 }
