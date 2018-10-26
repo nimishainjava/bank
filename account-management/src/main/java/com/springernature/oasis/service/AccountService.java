@@ -3,6 +3,7 @@ package com.springernature.oasis.service;
 import com.springernature.oasis.commons.exception.AccountException;
 import com.springernature.oasis.commons.publisher.kafka.producer.TransactionProducer;
 import com.springernature.oasis.model.*;
+import io.swagger.models.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ public class AccountService {
 
     // MongoDB Enpoints
     private final String GET_ACCOUNT_BY_ACCOUNT_ID = "/account/{*}";
+    private final String PUT_UPDATE_ACCOUNT_BY_ACCOUNT_ID = "/account/update";
 
     @Autowired
     private TransactionProducer transactionProducer;
@@ -53,7 +55,7 @@ public class AccountService {
             else if (e.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR))
                 // Log Exception
                 throw new AccountException(INTERNAL_SERVER_ERROR_MSG, e.getStatusCode());
-        }catch (AccountException ae) {
+        } catch (AccountException ae) {
             throw ae;
         } catch (Exception e) {
             // Log Exception
@@ -124,9 +126,10 @@ public class AccountService {
             updateAccountStatus(account);
 
             // log transaction
-            //logTranscation(account, transactionDetails);
+            logTransaction(account, transactionDetails);
 
             // TODO: send updated object to DB Service
+            restTemplate.put(createDBServiceRestUrl(PUT_UPDATE_ACCOUNT_BY_ACCOUNT_ID), account);
 
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode().equals(HttpStatus.NOT_FOUND))
@@ -138,9 +141,7 @@ public class AccountService {
             // Log Exception
             throw new AccountException(INTERNAL_SERVER_ERROR_MSG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         return new AccountResponse("Success.!!", HttpStatus.OK);
-
     }
 
     private void updateAccountBalance(Account account, TransactionType transactionType, TransactionDetails transactionDetails) {
@@ -191,12 +192,13 @@ public class AccountService {
     }
 
     private boolean checkAccountIsActiveOrOverDrawn(Account account) {
-        return ( account.getStatus().equals(AccountStatusType.ACTIVE)
-                || account.getStatus().equals(AccountStatusType.OVERDRAWN) );
+        return (account.getStatus().equals(AccountStatusType.ACTIVE)
+                || account.getStatus().equals(AccountStatusType.OVERDRAWN));
     }
 
     private boolean checkIfSufficientBalanceInAccount(Account account, TransactionDetails transactionDetails) {
         return (account.getBalance().doubleValue() + account.getOverDrawnLimit().doubleValue()) >= transactionDetails.getAmount().doubleValue();
     }
+
 
 }
