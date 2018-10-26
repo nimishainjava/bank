@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
@@ -61,11 +62,12 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void shouldNotGetAccount(){
+    public void shouldNotGetAccountIfNotExists(){
         ResponseEntity response = testRestTemplate.exchange(createURLWithPort("/account/2"),
                 HttpMethod.GET, null, String.class);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertTrue(response.getBody().toString().contains("Account Not found"));
     }
 
     @Test
@@ -91,6 +93,7 @@ public class CustomerControllerTest {
                 HttpMethod.PUT, entity, String.class);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertTrue(response.getBody().toString().contains("Account Not found"));
     }
 
     private Account getAccountModel() {

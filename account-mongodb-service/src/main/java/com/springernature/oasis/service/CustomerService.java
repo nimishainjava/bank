@@ -2,6 +2,7 @@ package com.springernature.oasis.service;
 
 import com.springernature.oasis.domain.Customer;
 import com.springernature.oasis.domain.Transaction;
+import com.springernature.oasis.exception.MongoDbServiceException;
 import com.springernature.oasis.model.Account;
 import com.springernature.oasis.model.CustomerDetails;
 import com.springernature.oasis.repository.CustomerRepository;
@@ -9,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Date;
 import java.util.UUID;
@@ -34,7 +34,7 @@ public class CustomerService {
            ModelMapper modelMapper = new ModelMapper();
            return modelMapper.map(account1,Account.class);
        }else {
-           throw new HttpClientErrorException(HttpStatus.NOT_FOUND,"No Account found");
+           throw new MongoDbServiceException("Account Not found",HttpStatus.NOT_FOUND);
        }
     }
 
@@ -46,10 +46,10 @@ public class CustomerService {
                 customerRepository.save(customer);
                 return account;
             }else {
-                throw new HttpClientErrorException(HttpStatus.NOT_FOUND,"No Account found");
+                throw new MongoDbServiceException("Account Not found",HttpStatus.NOT_FOUND);
             }
         }else {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,"Account number is not present");
+            throw new MongoDbServiceException("Account number is not present",HttpStatus.BAD_REQUEST);
         }
     }
 

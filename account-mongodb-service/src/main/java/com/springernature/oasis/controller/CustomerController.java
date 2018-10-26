@@ -21,21 +21,14 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/account/{accounId}")
-    public ResponseEntity getAccount(@PathVariable("accounId") Long accountId) {
-        try {
-            return new ResponseEntity(customerService.getAccount(accountId), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity("Not Found", HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity getAccount(@PathVariable("accounId") Long accountId) throws Exception {
+        return new ResponseEntity(customerService.getAccount(accountId), HttpStatus.OK);
     }
 
     @PutMapping(value = "/account/update")
-    public ResponseEntity updateAccount(@RequestBody Account account){
-        try {
+    public ResponseEntity updateAccount(@RequestBody Account account) throws Exception {
             return new ResponseEntity(customerService.updateAccount(account),HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity("Not Found", HttpStatus.NOT_FOUND);
-        }
+
     }
 
 }
