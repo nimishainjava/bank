@@ -18,3 +18,7 @@ server:
 account-management:
   transaction:
     topic: bank-transaction
+
+mongodb:
+  url: http://localhost
+  port: 8087

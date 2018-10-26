@@ -1,10 +1,8 @@
 package com.springernature.oasis.commons.publisher.kafka.producer;
 
-import com.springernature.oasis.commons.exception.AccountException;
 import com.springernature.oasis.model.TransactionDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +16,7 @@ public class TransactionProducer {
     private KafkaTemplate<String, TransactionDetails> kafkaTemplate;
 
     public void publish(TransactionDetails transactionDetails) {
-
-        try {
-            kafkaTemplate.send(TOPIC_TRANSCATIONS, transactionDetails);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new AccountException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        kafkaTemplate.send(TOPIC_TRANSCATIONS, transactionDetails);
     }
 
 }

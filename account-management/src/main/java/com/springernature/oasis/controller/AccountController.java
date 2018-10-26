@@ -25,17 +25,13 @@ public class AccountController {
         return accountService.deposit(request);
     }
 
-
     @PostMapping(value = "/withdraw", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity withdraw(@RequestBody TransactionDetails request) {
-
-        return new ResponseEntity(HttpStatus.OK);
+        return accountService.withdraw(request);
     }
-
 
     @PostMapping(value = "/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity transfer(@RequestBody TransactionDetails request) {
-
         return new ResponseEntity(HttpStatus.OK);
     }
 

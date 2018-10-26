@@ -4,71 +4,142 @@ import com.springernature.oasis.commons.exception.AccountException;
 import com.springernature.oasis.commons.publisher.kafka.producer.TransactionProducer;
 import com.springernature.oasis.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+
+import static com.springernature.oasis.constants.Messages.*;
 
 @Service
 public class AccountService {
 
-    private String DEPOST_SUCCESS_MESSAGE = "Amount INR {*} has been credited successfully.";
+    // MongoDB Enpoints
+    private final String GET_ACCOUNT_BY_ACCOUNT_ID = "/account/{*}";
 
     @Autowired
     private TransactionProducer transactionProducer;
 
+    private RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${mongodb.url}")
+    private String mongoDBServiceUrl;
+
+    @Value("${mongodb.port}")
+    private String mongoDBServicePort;
+
     public AccountResponse deposit(final TransactionDetails transactionDetails) {
 
-        // TODO: validation of account and retrieved info
+        // TODO: validation of transaction details send as request.
 
         try {
             // DB service call
+            Account account = restTemplate.getForObject(createDBServiceRestUrl(GET_ACCOUNT_BY_ACCOUNT_ID.replace("{*}", transactionDetails.getToAccountNumber().toString())), Account.class);
 
-            // throw new AccountException() -> if account status like inactive/blocked
+            // Check if the account is active/overdrawn to deposit money
+            if (account.getStatus().equals(AccountStatusType.ACTIVE)
+                    || account.getStatus().equals(AccountStatusType.OVERDRAWN)) {
+                transactionDetails.setType(TransactionType.CREDIT);
+                transactionProducer.publish(transactionDetails);
+            } else {
+                // throw new AccountException() -> if account status like inactive/blocked
+                throw new AccountException(ACCOUNT_INACTIVE_MSG, HttpStatus.FORBIDDEN);
+            }
         } catch (HttpStatusCodeException e) {
-            throw (new AccountException(e.getMessage(), e.getStatusCode()));
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND))
+                throw new AccountException(ACCOUNT_INVALID_MSG, e.getStatusCode());
+            else if (e.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR))
+                // Log Exception
+                throw new AccountException(INTERNAL_SERVER_ERROR_MSG, e.getStatusCode());
+        } catch (Exception e) {
+            // Log Exception
+            throw new AccountException(INTERNAL_SERVER_ERROR_MSG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        transactionDetails.setType(TransactionType.CREDIT);
-        transactionProducer.publish(transactionDetails);
-
-        return new AccountResponse(DEPOST_SUCCESS_MESSAGE.replace("{*}", transactionDetails.getAmount().toString()), HttpStatus.OK);
+        return new AccountResponse(DEPOSIT_SUCCESS_MSG.replace("{*}", transactionDetails.getAmount().toString()), HttpStatus.OK);
 
     }
 
-    public void withdraw(final TransactionDetails transactionDetails) {
+    public AccountResponse withdraw(final TransactionDetails transactionDetails) {
 
-        // TODO: validation of account and retrieved info
+        // TODO: validation of transaction details send as request.
 
-        transactionDetails.setType(TransactionType.DEBIT);
-        transactionProducer.publish(transactionDetails);
+        try {
+            // DB service call
+            Account account = restTemplate.getForObject(createDBServiceRestUrl(GET_ACCOUNT_BY_ACCOUNT_ID.replace("{*}", transactionDetails.getToAccountNumber().toString())), Account.class);
+
+            // Check if the account is active/overdrawn. Then check if the account has sufficient balance for the withdrawal request.
+            if (account.getStatus().equals(AccountStatusType.ACTIVE)
+                    || account.getStatus().equals(AccountStatusType.OVERDRAWN)) {
+                if ((account.getBalance().doubleValue() + account.getOverDrawnLimit().doubleValue()) >= transactionDetails.getAmount().doubleValue()) {
+                    transactionDetails.setType(TransactionType.DEBIT);
+                    transactionProducer.publish(transactionDetails);
+                } else {
+                    throw new AccountException(INSUFFICIENT_BALANCE_MSG, HttpStatus.UNPROCESSABLE_ENTITY);
+                }
+            } else {
+                // throw new AccountException() -> if account status like inactive/blocked
+                throw new AccountException(ACCOUNT_INACTIVE_MSG, HttpStatus.FORBIDDEN);
+            }
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND))
+                throw new AccountException(ACCOUNT_INVALID_MSG, e.getStatusCode());
+            else if (e.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR))
+                // Log Exception
+                throw new AccountException(INTERNAL_SERVER_ERROR_MSG, e.getStatusCode());
+        } catch (AccountException ae) {
+            throw ae;
+        } catch (Exception e) {
+            // Log Exception
+            throw new AccountException(INTERNAL_SERVER_ERROR_MSG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new AccountResponse(WITHDRAW_SUCCESS_MSG.replace("{*}", transactionDetails.getAmount().toString()), HttpStatus.OK);
     }
 
     public void transfer(final TransactionDetails transactionDetails) {
 
-        transactionDetails.setType(TransactionType.TRANSFER);
-        transactionProducer.publish(transactionDetails);
+        // TODO: Discuss the flow for transfer
+
+        /*transactionDetails.setType(TransactionType.TRANSFER);
+        transactionProducer.publish(transactionDetails);*/
 
     }
 
-    public void updateAccount(TransactionDetails transactionDetails) {
+    public AccountResponse updateAccount(TransactionDetails transactionDetails) {
 
-        // TODO: fetch account details from DB
+        // TODO: validate the data in request.
 
-        Account account = new Account();
+        try {
 
-        // update account available balance
-        updateAccountBalance(account, transactionDetails);
+            Account account = restTemplate.getForObject(createDBServiceRestUrl(GET_ACCOUNT_BY_ACCOUNT_ID.replace("{*}", transactionDetails.getToAccountNumber().toString())), Account.class);
 
-        //update account status
-        updateAccountStatus(account, transactionDetails);
+            // update account available balance
+            updateAccountBalance(account, transactionDetails);
 
-        // log transaction
-        logTranscation(account, transactionDetails);
+            //update account status
+            updateAccountStatus(account, transactionDetails);
 
-        // TODO: send updated object to DB Service
+            // log transaction
+            //logTranscation(account, transactionDetails);
 
+            // TODO: send updated object to DB Service
+
+        }  catch (HttpStatusCodeException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND))
+                throw new AccountException(ACCOUNT_INVALID_MSG, e.getStatusCode());
+            else if (e.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR))
+                // Log Exception
+                throw new AccountException(INTERNAL_SERVER_ERROR_MSG, e.getStatusCode());
+        } catch (Exception e) {
+            // Log Exception
+            throw new AccountException(INTERNAL_SERVER_ERROR_MSG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new AccountResponse("Success.!!", HttpStatus.OK);
 
     }
 
@@ -109,6 +180,14 @@ public class AccountService {
         } else {
             return transactionDetails.getFromAccountNumber() + "/" + transactionDetails.getDescription() + "/" + transactionDetails.getToAccountNumber();
         }
+    }
+
+    private String createDBServiceRestUrl(final String endpoint) {
+        return getDBServiceURL() + endpoint;
+    }
+
+    private String getDBServiceURL() {
+        return mongoDBServiceUrl + ":" + mongoDBServicePort;
     }
 
 }
