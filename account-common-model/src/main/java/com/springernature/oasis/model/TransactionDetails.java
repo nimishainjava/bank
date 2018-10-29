@@ -1,8 +1,9 @@
 package com.springernature.oasis.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class TransactionDetails {
+public class TransactionDetails implements Serializable {
 
     private Long toAccountNumber;
     private Long fromAccountNumber;

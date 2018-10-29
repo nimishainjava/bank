@@ -1,5 +1,5 @@
 server:
-  port: 8086
+  port: 8088
 
 spring:
   kafka:
@@ -20,6 +20,6 @@ workflow:
     id: OASIS-0002
     message: Error subscribing to Kafka topic ${workflow.messaging.topic}
 
-
-
-
+account:
+  service:
+    baseurl: http://localhost:8086/transaction/

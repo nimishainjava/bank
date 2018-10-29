@@ -1,65 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1wtxje8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
-  <bpmn:process id="bank_workflow" isExecutable="true" camunda:versionTag="1.0">
-    <bpmn:startEvent id="StartEvent_1" name="Receive Money">
-      <bpmn:outgoing>Step</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:serviceTask id="OrderPlace" name="addAcountTrasaction" camunda:expression="#{accountWorkflowService.accountTransaction()}" camunda:resultVariable="isTransactionCompleted">
-      <bpmn:incoming>Step</bpmn:incoming>
-      <bpmn:outgoing>Step2</bpmn:outgoing>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:tns="http://bpmn.io/schema/bpmn" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="Definitions_1hex8pu" name="" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="bank_workflow" name="bank_workflow" processType="None" isClosed="false" isExecutable="true" camunda:versionTag="1.0">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1vxpw8k" />
+    <bpmn:sequenceFlow id="SequenceFlow_1j1pel2" name="${x == &#39;deposit&#39;}" sourceRef="ExclusiveGateway_1vxpw8k" targetRef="ServiceTask_DepositAdapter">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${transactionType == 'deposit'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="ServiceTask_DepositAdapter" name="Deposit" camunda:delegateExpression="#{depositAdapter}" activiti:exclusive="true">
+      <bpmn:outgoing>SequenceFlow_172oz1u</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Step" sourceRef="StartEvent_1" targetRef="OrderPlace" />
-    <bpmn:endEvent id="EligibilityCheckCompleted">
-      <bpmn:incoming>Done</bpmn:incoming>
+    <bpmn:serviceTask id="ServiceTask_WithdrawAdapter" name="Withdraw" camunda:delegateExpression="#{withdrawAdapter}" activiti:exclusive="true">
+      <bpmn:outgoing>SequenceFlow_0n8fzr1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1h91pbn" name="${x == &#39;transfer&#39;}" sourceRef="ExclusiveGateway_1vxpw8k" targetRef="ServiceTask_TransferAdapter">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${transactionType == 'transfer'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="ServiceTask_TransferAdapter" name="Transfer" camunda:delegateExpression="#{transferAdapter}" activiti:exclusive="true">
+      <bpmn:outgoing>SequenceFlow_18shoug</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1sjy8ue" />
+    <bpmn:sequenceFlow id="SequenceFlow_1saqbp7" sourceRef="StartEvent_1sjy8ue" targetRef="ServiceTask_TransactionAdapter" />
+    <bpmn:sequenceFlow id="SequenceFlow_0sqm5rs" sourceRef="ServiceTask_TransactionAdapter" targetRef="ExclusiveGateway_1vxpw8k" />
+    <bpmn:serviceTask id="ServiceTask_TransactionAdapter" name="Get transaction type" camunda:delegateExpression="#{transactionAdapter}" activiti:exclusive="true" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ague7h" name="${x == &#39;withdraw&#39;}" sourceRef="ExclusiveGateway_1vxpw8k" targetRef="ServiceTask_WithdrawAdapter">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${transactionType == 'withdraw'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="EndEvent_0zk3fnz">
+      <bpmn:incoming>SequenceFlow_172oz1u</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="ServiceTask_0b69axr" name="updateAccountBalance" camunda:expression="#{accountWorkflowService.accountBalance()}" camunda:resultVariable="isAccountBalanceUpdated">
-      <bpmn:incoming>Step2</bpmn:incoming>
-      <bpmn:outgoing>step3</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Step2" sourceRef="OrderPlace" targetRef="ServiceTask_0b69axr" />
-    <bpmn:sequenceFlow id="Done" sourceRef="ServiceTask_0me7ahz" targetRef="EligibilityCheckCompleted" />
-    <bpmn:serviceTask id="ServiceTask_0me7ahz" name="updateAccountStatus" camunda:expression="#{accountWorkflowService.accountStatus()}" camunda:resultVariable="isAccountStatusUpdated">
-      <bpmn:incoming>step3</bpmn:incoming>
-      <bpmn:outgoing>Done</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="step3" sourceRef="ServiceTask_0b69axr" targetRef="ServiceTask_0me7ahz" />
+    <bpmn:sequenceFlow id="SequenceFlow_172oz1u" sourceRef="ServiceTask_DepositAdapter" targetRef="EndEvent_0zk3fnz" />
+    <bpmn:endEvent id="EndEvent_08yd2y3">
+      <bpmn:incoming>SequenceFlow_0n8fzr1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0n8fzr1" sourceRef="ServiceTask_WithdrawAdapter" targetRef="EndEvent_08yd2y3" />
+    <bpmn:endEvent id="EndEvent_19gsds3">
+      <bpmn:incoming>SequenceFlow_18shoug</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_18shoug" sourceRef="ServiceTask_TransferAdapter" targetRef="EndEvent_19gsds3" />
   </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="bank_workflow">
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="162" y="110" width="36" height="36" />
+  <bpmndi:BPMNDiagram id="Diagram-_1" name="New Diagram" documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0">
+    <bpmndi:BPMNPlane bpmnElement="bank_workflow">
+      <bpmndi:BPMNShape id="Shape-ExclusiveGateway_1vxpw8k" bpmnElement="ExclusiveGateway_1vxpw8k" isMarkerVisible="true">
+        <dc:Bounds x="428" y="269" width="32" height="32" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="144" y="153" width="77" height="14" />
+          <dc:Bounds x="0" y="0" width="32" height="32" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ServiceTask_01v6125_di" bpmnElement="OrderPlace">
-        <dc:Bounds x="265" y="88" width="100" height="80" />
+      <bpmndi:BPMNShape id="Shape-Task_08bsfxz" bpmnElement="ServiceTask_DepositAdapter">
+        <dc:Bounds x="645" y="95" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="0" y="0" width="100" height="80" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0j9b5xr_di" bpmnElement="Step">
-        <di:waypoint x="198" y="128" />
-        <di:waypoint x="265" y="128" />
+      <bpmndi:BPMNShape id="Shape-Task_0abfo8p" bpmnElement="ServiceTask_WithdrawAdapter">
+        <dc:Bounds x="645" y="254" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="0" y="0" width="100" height="80" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape-Task_0yglbdc" bpmnElement="ServiceTask_TransferAdapter">
+        <dc:Bounds x="645" y="413" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="0" y="0" width="100" height="80" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape-StartEvent_1sjy8ue" bpmnElement="StartEvent_1sjy8ue">
+        <dc:Bounds x="100" y="276" width="32" height="32" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="0" y="0" width="32" height="32" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape-ServiceTask_TransactionAdapter" bpmnElement="ServiceTask_TransactionAdapter">
+        <dc:Bounds x="233" y="254" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="0" y="0" width="100" height="80" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1j1pel2" bpmnElement="SequenceFlow_1j1pel2" sourceElement="ExclusiveGateway_1vxpw8k" targetElement="ServiceTask_DepositAdapter">
+        <di:waypoint x="453" y="278" />
+        <di:waypoint x="453" y="135" />
+        <di:waypoint x="645" y="135" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="429" y="199" width="78" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_1p8kcwk_di" bpmnElement="EligibilityCheckCompleted">
-        <dc:Bounds x="814" y="110" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ServiceTask_0b69axr_di" bpmnElement="ServiceTask_0b69axr">
-        <dc:Bounds x="445" y="88" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0le4h9b_di" bpmnElement="Step2">
-        <di:waypoint x="365" y="128" />
-        <di:waypoint x="445" y="128" />
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1saqbp7" bpmnElement="SequenceFlow_1saqbp7" sourceElement="StartEvent_1sjy8ue" targetElement="ServiceTask_TransactionAdapter">
+        <di:waypoint x="132" y="292" />
+        <di:waypoint x="233" y="294" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-1" y="-1" width="-1" height="-1" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0qvf0nb_di" bpmnElement="Done">
-        <di:waypoint x="637" y="128" />
-        <di:waypoint x="495" y="128" />
-        <di:waypoint x="814" y="128" />
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1ague7h" bpmnElement="SequenceFlow_1ague7h" sourceElement="ExclusiveGateway_1vxpw8k" targetElement="ServiceTask_WithdrawAdapter">
+        <di:waypoint x="460" y="285" />
+        <di:waypoint x="645" y="294" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="519" y="276" width="86" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ServiceTask_0me7ahz_di" bpmnElement="ServiceTask_0me7ahz">
-        <dc:Bounds x="637" y="88" width="100" height="80" />
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1h91pbn" bpmnElement="SequenceFlow_1h91pbn" sourceElement="ExclusiveGateway_1vxpw8k" targetElement="ServiceTask_TransferAdapter">
+        <di:waypoint x="453" y="292" />
+        <di:waypoint x="453" y="453" />
+        <di:waypoint x="645" y="453" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="428" y="383" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_0sqm5rs" bpmnElement="SequenceFlow_0sqm5rs" sourceElement="ServiceTask_TransactionAdapter" targetElement="ExclusiveGateway_1vxpw8k">
+        <di:waypoint x="333" y="294" />
+        <di:waypoint x="428" y="285" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-1" y="-1" width="-1" height="-1" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0zk3fnz_di" bpmnElement="EndEvent_0zk3fnz">
+        <dc:Bounds x="930" y="117" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_1uaxamf_di" bpmnElement="step3">
-        <di:waypoint x="545" y="128" />
-        <di:waypoint x="637" y="128" />
+      <bpmndi:BPMNEdge id="SequenceFlow_172oz1u_di" bpmnElement="SequenceFlow_172oz1u">
+        <di:waypoint x="745" y="135" />
+        <di:waypoint x="930" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_08yd2y3_di" bpmnElement="EndEvent_08yd2y3">
+        <dc:Bounds x="930" y="276" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0n8fzr1_di" bpmnElement="SequenceFlow_0n8fzr1">
+        <di:waypoint x="745" y="294" />
+        <di:waypoint x="930" y="294" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_19gsds3_di" bpmnElement="EndEvent_19gsds3">
+        <dc:Bounds x="930" y="435" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_18shoug_di" bpmnElement="SequenceFlow_18shoug">
+        <di:waypoint x="745" y="453" />
+        <di:waypoint x="930" y="453" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
